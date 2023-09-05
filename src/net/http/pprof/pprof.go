@@ -9,17 +9,28 @@
 // registering its HTTP handlers.
 // The handled paths all begin with /debug/pprof/.
 //
-// To use pprof, link this package into your program:
+// To use pprof, link this package into your program. This will add the
+// profiling endpoints to the default server-mux.
 //
 //	import _ "net/http/pprof"
 //
-// If your application is not already running an http server, you
+// If the expectation is to make the profiling end-points available only
+// on a certain port for security reasons. Add the following code to your main function:
+// 
+//	pprofMux := http.DefaultServeMux
+//	http.DefaultServeMux = http.NewServeMux()
+//	go func() {
+// 		log.Println(http.ListenAndServe("localhost:6060", pprofMux))
+//	}
+//
+// If the above is not the case, and the application is not already running an http server, you
 // need to start one. Add "net/http" and "log" to your imports and
 // the following code to your main function:
 //
 //	go func() {
 //		log.Println(http.ListenAndServe("localhost:6060", nil))
 //	}()
+//
 //
 // By default, all the profiles listed in [runtime/pprof.Profile] are
 // available (via [Handler]), in addition to the [Cmdline], [Profile], [Symbol],
